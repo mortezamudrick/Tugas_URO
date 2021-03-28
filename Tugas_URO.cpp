@@ -197,8 +197,10 @@ class Mekanisme{
 
 int main() {
     Mekanisme mekanismeku;
-    while(1){
-        cout << "command: "; char command = getchar();
+    char command;
+    while(command != 'p'){
+        printf("\n");
+        cout << "command: "; cin>>command;
         if ((command == 'a') || (command == 'w') || (command == 's') || (command =='d')){
             mekanismeku.kontrol_gerak_robot(command);
             mekanismeku.kecoak_menyerang();
