@@ -3,6 +3,7 @@
 #include <cstdlib>
 using namespace std;
 int maks_x=20; int maks_y=10; int maks_kecoak=15; int jangkauan_robot;
+string pesan_output=" ";
 class Kecoak{
     public:
         int x; int y; int health; int damage; int jangkauan_serang; bool isMati;
@@ -51,19 +52,19 @@ class Robot{
         }
         void robot_bergerak(char control){
             if (control == 'w'){
-                if ((y+1)>maks_y){printf("Tidak bisa bergerak karena di luar sumbu\n");}
+                if ((y+1)>maks_y){pesan_output="Tidak bisa bergerak karena akan di luar batas grid\n";}
                 else{y++;}
             }
             if (control == 's'){
-                if (y-1 < 0){printf("Tidak bisa bergerak karena di luar sumbu\n");}
+                if (y-1 < 0){pesan_output="Tidak bisa bergerak karena di luar batas grid\n";}
                 else{y--;}
             }
             if (control == 'd'){
-                if ((x+1)>maks_x){printf("Tidak bisa bergerak karena di luar sumbu\n");}
+                if ((x+1)>maks_x){pesan_output="Tidak bisa bergerak karena di luar batas grid\n";}
                 else{x++;}
             }
             if (control == 'a'){
-                if ((x-1) < 0){printf("Tidak bisa bergerak karena di luar sumbu\n");}
+                if ((x-1) < 0){pesan_output="Tidak bisa bergerak karena di luar batas grid\n";}
                 else{x--;}
             }
         }
@@ -80,6 +81,7 @@ class Mekanisme{
     public:
         Mekanisme(){
             jumlah_kecoak = rand() % maks_kecoak;
+            antisipasi_duplikat();
         }
         void printing_x_kecoak(){
             for(int i=0;i<jumlah_kecoak;i++){
@@ -237,13 +239,18 @@ class Mekanisme{
                 Kecoak coba_kecoak = arr_kecoak[i];
                 coba_kecoak.kecoak_bergerak();
                 bool is_sama=false;
+                if ((coba_kecoak.x==robotku.x) && (coba_kecoak.y==robotku.y)){
+                    pesan_output="sama";
+                    is_sama=true;
+                }
                 for (int j=0; j<jumlah_kecoak; j++){
                     if ((coba_kecoak.x==arr_kecoak[j].x) && (coba_kecoak.y==arr_kecoak[j].y) && (not arr_kecoak[j].isMati) && (j!=i)){
                         is_sama=true;
                     }
                 }
                 if (not is_sama){
-                    arr_kecoak[i].kecoak_bergerak();
+                    arr_kecoak[i].x=coba_kecoak.x;
+                    arr_kecoak[i].y=coba_kecoak.y;
                 }
             }
         }
@@ -254,7 +261,16 @@ int main() {
     char command;
     while(command != 'p'){
         mekanismeku.peta();
+        if (command == 'i'){
+            system("cls"); 
+            mekanismeku.info();
+        }
+        if (command == 'j'){
+            mekanismeku.kalkulasi_jarak();
+        }
         printf("\n");
+        cout <<pesan_output;
+        pesan_output = " ";
         cout << "command: "; cin>>command;
         if ((command == 'a') || (command == 'w') || (command == 's') || (command =='d')){
             mekanismeku.kontrol_gerak_robot(command);
@@ -262,16 +278,6 @@ int main() {
             mekanismeku.kontrol_gerak_kecoak();
             system("cls"); 
         }
-        if (command == 'i'){
-            mekanismeku.info();
-        }
-        if (command == 'j'){
-            mekanismeku.kalkulasi_jarak();
-        }
-        if (command == 'c'){
-            system("cls"); 
-        }
     }
     return 0;
 }
-
