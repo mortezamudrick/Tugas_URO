@@ -172,20 +172,30 @@ class Mekanisme{
             }
         }
         void peta(){
-            string grid[maks_y+1][maks_x+1];
-            for(int i=1;i<(maks_y+1);i++){
-                for(int j=1;j<(maks_x+1);j++){
-                    grid[i][j]="* ";
+            int baris=maks_y+1;
+            int kolom=maks_x+1;
+            string grid[baris][kolom];
+            for(int i=0;i<baris;i++){
+                for(int j=0;j<kolom;j++){
+                    grid[i][j]=" .";
                 }
             }
-            for (int i=0;i<(maks_y+1);i++){
+            for (int i=0;i<baris;i++){
                 grid[i][0]="|";
             }
-            for (int j=0;j<(maks_x+1);j++){
-                grid[maks_y][j]="--";
+            for (int j=0;j<kolom;j++){
+                grid[baris-1][j]="--";
             }
-            for(int i=0;i<maks_x+1;i++){
-                for(int j=0;j<maks_y+1;j++){
+            grid[baris-1-robotku.y][robotku.x] = " R";
+            for(int i=0; i<jumlah_kecoak; i++){
+                if (not arr_kecoak[i].isMati){
+                    int komp_x=baris-1-arr_kecoak[i].y;
+                    int komp_y=arr_kecoak[i].x;
+                    grid[komp_x][komp_y] = " K";
+                }
+            }
+            for(int i=0;i<baris;i++){
+                for(int j=0;j<kolom;j++){
                     cout<<grid[i][j];
                 }
                 cout<<endl;
@@ -199,11 +209,14 @@ int main() {
     Mekanisme mekanismeku;
     char command;
     while(command != 'p'){
+        mekanismeku.peta();
         printf("\n");
         cout << "command: "; cin>>command;
         if ((command == 'a') || (command == 'w') || (command == 's') || (command =='d')){
             mekanismeku.kontrol_gerak_robot(command);
             mekanismeku.kecoak_menyerang();
+            mekanismeku.kontrol_gerak_kecoak();
+            system("cls"); 
         }
         if (command == 'i'){
             mekanismeku.info();
@@ -217,3 +230,4 @@ int main() {
     }
     return 0;
 }
+
