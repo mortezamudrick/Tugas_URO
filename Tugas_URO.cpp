@@ -18,12 +18,12 @@ class Kecoak{
             else{return false;}
         }
         void kecoak_bergerak(){
-            int move_1 = -1 + (rand()%2);
-            int move_2 = -1 + (rand()%2);
-            if ((x + move_1) >= 0){
+            int move_1 = -1 + (rand()%3);
+            int move_2 = -1 + (rand()%3);
+            if ((x + move_1 >= 0) && (x + move_1 <= maks_x)){
                 x += move_1;
             }
-            if ((y + move_2) >= 0){
+            if ((y + move_2 >= 0) && (y + move_2 <= maks_y)){
                 y += move_2;
             }
         }
@@ -50,12 +50,18 @@ class Robot{
                 else{return false;}
         }
         void robot_bergerak(char control){
-            if (control == 'w'){y++; }
+            if (control == 'w'){
+                if ((y+1)>maks_y){printf("Tidak bisa bergerak karena di luar sumbu\n");}
+                else{y++;}
+            }
             if (control == 's'){
-                if ((y-1) < 0){printf("Tidak bisa bergerak karena di luar sumbu\n");}
+                if (y-1 < 0){printf("Tidak bisa bergerak karena di luar sumbu\n");}
                 else{y--;}
             }
-            if (control == 'd'){x++;}
+            if (control == 'd'){
+                if ((x+1)>maks_x){printf("Tidak bisa bergerak karena di luar sumbu\n");}
+                else{x++;}
+            }
             if (control == 'a'){
                 if ((x-1) < 0){printf("Tidak bisa bergerak karena di luar sumbu\n");}
                 else{x--;}
@@ -201,8 +207,46 @@ class Mekanisme{
                 cout<<endl;
             }
         }
-        void kontrol_gerak_robot(char inputan){robotku.robot_bergerak(inputan);}
-        void kontrol_gerak_kecoak(){for (int i=0; i<jumlah_kecoak; i++){arr_kecoak[i].kecoak_bergerak();}}
+        void kontrol_gerak_robot(char inputan){
+            Robot coba_robot=robotku;
+            coba_robot.robot_bergerak(inputan);
+            bool is_sama=false;
+            for (int i=0; i<jumlah_kecoak; i++){
+                if ((coba_robot.x==arr_kecoak[i].x) && (coba_robot.y==arr_kecoak[i].y) && (not arr_kecoak[i].isMati)){
+                    is_sama=true;
+                }
+            }
+            if (not is_sama){
+                robotku.robot_bergerak(inputan);
+            }    
+        }
+        void antisipasi_duplikat(){
+            for (int i=0; i<jumlah_kecoak; i++){
+                for (int j=0; j<jumlah_kecoak; j++){
+                    if ((arr_kecoak[j].x == arr_kecoak[i].x) && (arr_kecoak[j].y == arr_kecoak[i].y) && (j!=i)){
+                        while ((arr_kecoak[j].x == arr_kecoak[i].x) && (arr_kecoak[j].y == arr_kecoak[i].y)){
+                            arr_kecoak[j].x = 1 + rand() % maks_x+1;
+                            arr_kecoak[j].y = 1 + rand() % maks_y+1;
+                        }
+                    }
+                }
+            }
+        }
+        void kontrol_gerak_kecoak(){
+            for (int i=0; i<jumlah_kecoak; i++){
+                Kecoak coba_kecoak = arr_kecoak[i];
+                coba_kecoak.kecoak_bergerak();
+                bool is_sama=false;
+                for (int j=0; j<jumlah_kecoak; j++){
+                    if ((coba_kecoak.x==arr_kecoak[j].x) && (coba_kecoak.y==arr_kecoak[j].y) && (not arr_kecoak[j].isMati) && (j!=i)){
+                        is_sama=true;
+                    }
+                }
+                if (not is_sama){
+                    arr_kecoak[i].kecoak_bergerak();
+                }
+            }
+        }
 };
 
 int main() {
