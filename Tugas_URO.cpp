@@ -154,6 +154,7 @@ class Mekanisme{
                     j++;
                 }
             }
+            printf("\n");
         }
         void sorting(Kecoak kecoak[128],int panjang_array){
             for(int i=0; i<panjang_array; i++){
@@ -185,11 +186,13 @@ class Mekanisme{
                 }
             }
             sorting(kumpulan_kecoak,j);
+            cout<<"======JARAK-JARAK KECOAK======\n";
             for (int i=0; i<j; i++){
                 printf("--Kecoak %d\n",i+1);
                 printf("Koordinat Kecoak = (%d,%d)\n",kumpulan_kecoak[i].x,kumpulan_kecoak[i].y);
                 printf("Jarak Kecoak = %.2f\n",robotku.jarak_robot_kecoak(kumpulan_kecoak[i]));
             }
+            printf("\n");
         }
         void peta(){
             int baris=maks_y+1;
@@ -303,6 +306,7 @@ int main() {
         }
         else
         {
+            if ((command =='i') || (command =='j')){continue;}
             pesan_output = "Input tidak dikenali\n";
             mekanismeku.kecoak_menyerang();
             mekanismeku.kontrol_gerak_kecoak();
