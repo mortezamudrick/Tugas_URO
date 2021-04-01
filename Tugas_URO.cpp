@@ -1,8 +1,9 @@
 #include <iostream>
 #include <cmath>
 #include <cstdlib>
+#include <sstream>
 using namespace std;
-int maks_x=20; int maks_y=10; int maks_kecoak=15; int jangkauan_robot;
+int maks_x=20; int maks_y=10; int maks_kecoak=15; int jangkauan_robot=5;
 string pesan_output=" ";
 class Kecoak{
     public:
@@ -13,6 +14,7 @@ class Kecoak{
             y = 1 + rand() % maks_y+1;
             health=3; damage=1;
             jangkauan_serang = 2;
+            isMati = false;
         }
         bool isKecoakMati(){
             if (health==0){return true;}
@@ -100,12 +102,22 @@ class Mekanisme{
                 }
             }
             if (ada_serangan){
-                int indeks_yang_diserang = rand()%(j+1);
+                int indeks_yang_diserang = rand()%j;
                 arr_kecoak[indeks_kecoak_diserang[indeks_yang_diserang]].health -= robotku.damage;
                 arr_kecoak[indeks_kecoak_diserang[indeks_yang_diserang]].cek_mati();
+                if (arr_kecoak[indeks_kecoak_diserang[indeks_yang_diserang]].isMati){
+                    if (jumlah_kecoa_hidup() == 0){
+                        pesan_output="Semua Kecoak telah musnah\n";
+                    }
+                    else{
+                        stringstream ss;
+                        ss<<jumlah_kecoa_hidup();
+                        pesan_output = "1 Kecoak telah tumbang, tersisa "+ss.str()+" Kecoak lagi\n";
+                    }
+                }
             }
             else{
-                cout << "Kecoak berada di luar jangkauan\n";
+                pesan_output = "Kecoak berada di luar jangkauan\n";
             }
         }
         void kecoak_menyerang(){
@@ -240,7 +252,6 @@ class Mekanisme{
                 coba_kecoak.kecoak_bergerak();
                 bool is_sama=false;
                 if ((coba_kecoak.x==robotku.x) && (coba_kecoak.y==robotku.y)){
-                    pesan_output="sama";
                     is_sama=true;
                 }
                 for (int j=0; j<jumlah_kecoak; j++){
@@ -254,6 +265,10 @@ class Mekanisme{
                 }
             }
         }
+        bool robot_mati(){
+        if (robotku.isRobotMati()){return true;}
+        else{return false;}
+    }
 };
 
 int main() {
@@ -266,6 +281,7 @@ int main() {
             mekanismeku.info();
         }
         if (command == 'j'){
+            system("cls"); 
             mekanismeku.kalkulasi_jarak();
         }
         printf("\n");
@@ -277,6 +293,20 @@ int main() {
             mekanismeku.kecoak_menyerang();
             mekanismeku.kontrol_gerak_kecoak();
             system("cls"); 
+        }
+        else if (command == 't')
+        {
+            mekanismeku.robot_menyerang();
+            mekanismeku.kecoak_menyerang();
+            mekanismeku.kontrol_gerak_kecoak();
+            system("cls");
+        }
+        else
+        {
+            pesan_output = "Input tidak dikenali\n";
+            mekanismeku.kecoak_menyerang();
+            mekanismeku.kontrol_gerak_kecoak();
+            system("cls");
         }
     }
     return 0;
